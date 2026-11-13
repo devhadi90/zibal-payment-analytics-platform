@@ -1,0 +1,9 @@
+name: zibal_transform
+version: '1.0.0'
+config-version: 2
+profile: zibal
+model-paths: ["models"]
+clean-targets: ["target", "dbt_packages"]
+models:
+  zibal_transform:
+    +materialized: view

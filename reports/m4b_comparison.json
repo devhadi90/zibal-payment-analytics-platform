@@ -1,0 +1,179 @@
+{
+  "measured_utc": "2026-11-13T21:01:04.871455+00:00",
+  "as_of_date": "2026-11-13",
+  "data_cutoff": "simulator stopped; manual source/mart checkpoint reconciliation required",
+  "cached_result_flags": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "results": [
+    {
+      "card": "card1_daily_success_amount_count_90d",
+      "pg_rows": 90,
+      "ch_rows": 90,
+      "strict_equal": true,
+      "passed": true,
+      "comparison_rule": "strict_rows",
+      "pg_only_keys": 0,
+      "ch_only_keys": 0,
+      "mismatched_metric_cells": 0,
+      "examples": [],
+      "pg_totals": {
+        "success_count": "2437695",
+        "success_amount": "17600066921000"
+      },
+      "ch_totals": {
+        "success_count": "2437695",
+        "success_amount": "17600066921000.0"
+      }
+    },
+    {
+      "card": "card2_daily_success_rate_by_channel_30d",
+      "pg_rows": 90,
+      "ch_rows": 90,
+      "strict_equal": true,
+      "passed": true,
+      "comparison_rule": "strict_rows",
+      "pg_only_keys": 0,
+      "ch_only_keys": 0,
+      "mismatched_metric_cells": 0,
+      "examples": [],
+      "pg_totals": {
+        "success_rate": "72.3164233264995444"
+      },
+      "ch_totals": {
+        "success_rate": "72.3164233264995444"
+      }
+    },
+    {
+      "card": "card3_top10_merchants_current_month",
+      "pg_rows": 10,
+      "ch_rows": 10,
+      "strict_equal": true,
+      "passed": true,
+      "comparison_rule": "strict_rows",
+      "pg_only_keys": 0,
+      "ch_only_keys": 0,
+      "mismatched_metric_cells": 0,
+      "examples": [],
+      "pg_totals": {
+        "success_amount": "372030513000"
+      },
+      "ch_totals": {
+        "success_amount": "372030513000.0"
+      }
+    },
+    {
+      "card": "card4_fee_by_mcc_province_90d",
+      "pg_rows": 100,
+      "ch_rows": 100,
+      "strict_equal": false,
+      "passed": true,
+      "comparison_rule": "grand_totals_historical_dimensional_difference_allowed",
+      "pg_only_keys": 0,
+      "ch_only_keys": 0,
+      "mismatched_metric_cells": 94,
+      "examples": [
+        {
+          "key": [
+            "4121",
+            "Alborz"
+          ],
+          "metric": "fee_amount",
+          "pg": "2401818792",
+          "ch": "2529779964"
+        },
+        {
+          "key": [
+            "4121",
+            "East Azerbaijan"
+          ],
+          "metric": "fee_amount",
+          "pg": "1406001072",
+          "ch": "1531992264"
+        },
+        {
+          "key": [
+            "4121",
+            "Fars"
+          ],
+          "metric": "fee_amount",
+          "pg": "2717081892",
+          "ch": "2745679188"
+        }
+      ],
+      "pg_totals": {
+        "fee_amount": "211200803052"
+      },
+      "ch_totals": {
+        "fee_amount": "211200803052.0"
+      }
+    },
+    {
+      "card": "card5_monthly_success_by_risk_level",
+      "pg_rows": 21,
+      "ch_rows": 21,
+      "strict_equal": false,
+      "passed": true,
+      "comparison_rule": "grand_totals_historical_dimensional_difference_allowed",
+      "pg_only_keys": 0,
+      "ch_only_keys": 0,
+      "mismatched_metric_cells": 42,
+      "examples": [
+        {
+          "key": [
+            "2026-05-01",
+            "HIGH"
+          ],
+          "metric": "success_count",
+          "pg": "85672",
+          "ch": "91468"
+        },
+        {
+          "key": [
+            "2026-05-01",
+            "HIGH"
+          ],
+          "metric": "success_amount",
+          "pg": "619695277000",
+          "ch": "661819895000.0"
+        },
+        {
+          "key": [
+            "2026-05-01",
+            "LOW"
+          ],
+          "metric": "success_count",
+          "pg": "161718",
+          "ch": "154567"
+        }
+      ],
+      "pg_totals": {
+        "success_count": "4483082",
+        "success_amount": "32397177961000"
+      },
+      "ch_totals": {
+        "success_count": "4483082",
+        "success_amount": "32397177961000.0"
+      }
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+# M2-B: additive raw CDC setup and opt-in consumer. Does not start the connector.
+# Always apply after docker-compose.yml and docker-compose.m2.yml.
+services:
+  raw-init:
+    image: clickhouse/clickhouse-server:${CLICKHOUSE_VERSION}
+    profiles: ["cdc"]
+    depends_on:
+      clickhouse: {condition: service_healthy}
+    environment:
+      CH_USER: zibal_analytics
+      CH_PASSWORD: zibal_clickhouse_demo_2026
+    volumes:
+      - ./clickhouse/init/01-raw.sql:/schema/01-raw.sql:ro
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - 'clickhouse-client --host clickhouse --user "$$CH_USER" --password "$$CH_PASSWORD" --multiquery < /schema/01-raw.sql && echo "PASS: raw CDC tables initialized"'
+    restart: "no"
+    mem_limit: 256m
+
+  cdc-consumer:
+    build: ./cdc/consumer
+    profiles: ["cdc"]
+    depends_on:
+      kafka: {condition: service_healthy}
+      clickhouse: {condition: service_healthy}
+      raw-init: {condition: service_completed_successfully}
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_GROUP_ID: zibal_raw_clickhouse_v1
+      KAFKA_TOPICS: zibal_cdc.core.merchants,zibal_cdc.core.transactions
+      CLICKHOUSE_HTTP_URL: http://clickhouse:8123
+      CLICKHOUSE_USER: zibal_analytics
+      CLICKHOUSE_PASSWORD: zibal_clickhouse_demo_2026
+      CDC_BATCH_SIZE: "1000"
+      CDC_FLUSH_SECONDS: "2"
+    command: ["python", "consumer.py"]
+    mem_limit: 384m
+    restart: unless-stopped

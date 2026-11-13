@@ -1,0 +1,48 @@
+# Local credentials and environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*secret*
+*credential*
+
+# Generated/temporary Python and dbt files
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+target/
+dbt_packages/
+*.log
+*.bak
+*.tmp
+
+# Generated artifacts and development notes
+development-notes/
+project-tree.txt
+zibal-source-for-claude.md
+startup-review.zip
+zibal-submission.zip
+*.zip
+
+# Keep only authoritative reports in Git, with exact matching generator names
+reports/*
+!reports/README.md
+!reports/.gitkeep
+!reports/m4b_benchmark.json
+!reports/m4b_comparison.json
+!reports/m5b_daily_reconciliation.json
+
+.DS_Store
+# Local migration helper (not part of reviewer deliverable)
+scripts/curate-project.ps1
+
+# Legacy Windows-only tooling retained locally for reference; portable Python is canonical.
+register_zibal_cdc.ps1
+scripts/start-all.ps1
+scripts/verify-final.ps1
+scripts/package-submission.ps1
+/transform/dbt/logs/

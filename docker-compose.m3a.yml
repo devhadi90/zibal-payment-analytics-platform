@@ -1,0 +1,14 @@
+# M3-A staging smoke test; append after M1, M2-A, M2-B Compose files.
+# This service is opt-in and never starts automatically.
+services:
+  dbt-runner:
+    build: ./transform/dbt
+    profiles: ["transform"]
+    depends_on:
+      clickhouse: {condition: service_healthy}
+    environment:
+      CLICKHOUSE_HOST: clickhouse
+      CLICKHOUSE_USER: zibal_analytics
+      CLICKHOUSE_PASSWORD: zibal_clickhouse_demo_2026
+    mem_limit: 1024m
+    restart: "no"

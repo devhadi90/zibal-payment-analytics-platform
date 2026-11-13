@@ -1,0 +1,27 @@
+version: 2
+sources:
+  - name: raw
+    schema: raw
+    description: "Restricted raw Debezium CDC; no direct reporting access"
+    tables:
+      - name: cdc_transactions
+      - name: cdc_merchants
+models:
+  - name: stg_transactions_events
+    description: "One typed row per transaction CDC event identity. No reporting aggregation. Incrementally append bounded Kafka offset windows."
+    columns:
+      - name: transaction_id
+        tests: [not_null]
+      - name: op
+        tests:
+          - accepted_values:
+              values: ['r', 'c', 'u', 'd']
+  - name: stg_merchants_events
+    description: "One typed merchant change event; source PII is masked, never stored as cleartext."
+    columns:
+      - name: merchant_id
+        tests: [not_null]
+      - name: op
+        tests:
+          - accepted_values:
+              values: ['r', 'c', 'u', 'd']

@@ -1,0 +1,453 @@
+{
+  "measured_utc": "2026-11-13T11:39:40.671975+00:00",
+  "as_of_date": "2026-11-13",
+  "runs": 20,
+  "warmups": 1,
+  "via": "Metabase POST /api/dataset (native SQL, request+query wall clock; not saved card dashboard rendering)",
+  "cache_policy": "ad-hoc native SQL requests; cache setting measured in preflight; cached result flags checked where exposed",
+  "caveat": "Metabase response time includes API overhead. Cache-hit flags are not guaranteed in all Metabase versions.",
+  "comparison": [
+    {
+      "card": "card1_daily_success_amount_count_90d",
+      "pg_rows": 90,
+      "ch_rows": 90,
+      "strict_equal": true,
+      "passed": true,
+      "comparison_rule": "strict_rows",
+      "pg_only_keys": 0,
+      "ch_only_keys": 0,
+      "mismatched_metric_cells": 0,
+      "examples": [],
+      "pg_totals": {
+        "success_count": "2437695",
+        "success_amount": "17600066921000"
+      },
+      "ch_totals": {
+        "success_count": "2437695",
+        "success_amount": "17600066921000.0"
+      }
+    },
+    {
+      "card": "card2_daily_success_rate_by_channel_30d",
+      "pg_rows": 90,
+      "ch_rows": 90,
+      "strict_equal": true,
+      "passed": true,
+      "comparison_rule": "strict_rows",
+      "pg_only_keys": 0,
+      "ch_only_keys": 0,
+      "mismatched_metric_cells": 0,
+      "examples": [],
+      "pg_totals": {
+        "success_rate": "72.3164233264995444"
+      },
+      "ch_totals": {
+        "success_rate": "72.3164233264995444"
+      }
+    },
+    {
+      "card": "card3_top10_merchants_current_month",
+      "pg_rows": 10,
+      "ch_rows": 10,
+      "strict_equal": true,
+      "passed": true,
+      "comparison_rule": "strict_rows",
+      "pg_only_keys": 0,
+      "ch_only_keys": 0,
+      "mismatched_metric_cells": 0,
+      "examples": [],
+      "pg_totals": {
+        "success_amount": "372030513000"
+      },
+      "ch_totals": {
+        "success_amount": "372030513000.0"
+      }
+    },
+    {
+      "card": "card4_fee_by_mcc_province_90d",
+      "pg_rows": 100,
+      "ch_rows": 100,
+      "strict_equal": false,
+      "passed": true,
+      "comparison_rule": "grand_totals_historical_dimensional_difference_allowed",
+      "pg_only_keys": 0,
+      "ch_only_keys": 0,
+      "mismatched_metric_cells": 94,
+      "examples": [
+        {
+          "key": [
+            "4121",
+            "Alborz"
+          ],
+          "metric": "fee_amount",
+          "pg": "2401818792",
+          "ch": "2529779964"
+        },
+        {
+          "key": [
+            "4121",
+            "East Azerbaijan"
+          ],
+          "metric": "fee_amount",
+          "pg": "1406001072",
+          "ch": "1531992264"
+        },
+        {
+          "key": [
+            "4121",
+            "Fars"
+          ],
+          "metric": "fee_amount",
+          "pg": "2717081892",
+          "ch": "2745679188"
+        }
+      ],
+      "pg_totals": {
+        "fee_amount": "211200803052"
+      },
+      "ch_totals": {
+        "fee_amount": "211200803052.0"
+      }
+    },
+    {
+      "card": "card5_monthly_success_by_risk_level",
+      "pg_rows": 21,
+      "ch_rows": 21,
+      "strict_equal": false,
+      "passed": true,
+      "comparison_rule": "grand_totals_historical_dimensional_difference_allowed",
+      "pg_only_keys": 0,
+      "ch_only_keys": 0,
+      "mismatched_metric_cells": 42,
+      "examples": [
+        {
+          "key": [
+            "2026-05-01",
+            "HIGH"
+          ],
+          "metric": "success_count",
+          "pg": "85672",
+          "ch": "91468"
+        },
+        {
+          "key": [
+            "2026-05-01",
+            "HIGH"
+          ],
+          "metric": "success_amount",
+          "pg": "619695277000",
+          "ch": "661819895000.0"
+        },
+        {
+          "key": [
+            "2026-05-01",
+            "LOW"
+          ],
+          "metric": "success_count",
+          "pg": "161718",
+          "ch": "154567"
+        }
+      ],
+      "pg_totals": {
+        "success_count": "4483082",
+        "success_amount": "32397177961000"
+      },
+      "ch_totals": {
+        "success_count": "4483082",
+        "success_amount": "32397177961000.0"
+      }
+    }
+  ],
+  "cards": [
+    {
+      "card": "card1_daily_success_amount_count_90d",
+      "pg": {
+        "samples_ms": [
+          1391.71,
+          1517.57,
+          1398.32,
+          1382.09,
+          1379.29,
+          1397.17,
+          1400.37,
+          1390.75,
+          1410.18,
+          1388.0,
+          1407.33,
+          1404.56,
+          1453.99,
+          1401.45,
+          1391.3,
+          1447.37,
+          1391.19,
+          1386.4,
+          1402.04,
+          1395.01
+        ],
+        "median_ms": 1397.74,
+        "p95_ms": 1453.99
+      },
+      "ch": {
+        "samples_ms": [
+          27.59,
+          31.04,
+          27.87,
+          25.11,
+          27.92,
+          30.93,
+          25.1,
+          23.58,
+          26.14,
+          27.26,
+          24.49,
+          23.62,
+          26.37,
+          24.13,
+          24.35,
+          24.98,
+          24.45,
+          23.27,
+          22.59,
+          25.29
+        ],
+        "median_ms": 25.11,
+        "p95_ms": 30.93
+      },
+      "median_speedup_pg_over_ch": 55.68,
+      "baseline_sql": "SELECT (t.created_at AT TIME ZONE 'Asia/Tehran')::date AS day,\n       count(*) AS success_count, sum(t.amount) AS success_amount\nFROM core.transactions t\nWHERE t.status = 'SUCCESS'\n  AND t.created_at >= ((DATE '2026-11-13') - 89)::timestamp AT TIME ZONE 'Asia/Tehran'\n  AND t.created_at <  ((DATE '2026-11-13') + 1)::timestamp  AT TIME ZONE 'Asia/Tehran'\nGROUP BY 1 ORDER BY 1;",
+      "optimized_sql": "SELECT date AS day,\n       sum(success_count) AS success_count,\n       sum(success_amount) AS success_amount\nFROM marts.agg_daily_sales\nWHERE date >= addDays(toDate('2026-11-13'), -89)\n  AND date <= toDate('2026-11-13')\nGROUP BY day\nORDER BY day;"
+    },
+    {
+      "card": "card2_daily_success_rate_by_channel_30d",
+      "pg": {
+        "samples_ms": [
+          1102.2,
+          1100.95,
+          1091.35,
+          1078.23,
+          1121.99,
+          1091.9,
+          1089.64,
+          1092.83,
+          1102.84,
+          1085.71,
+          1104.38,
+          1093.35,
+          1095.23,
+          1159.93,
+          1096.45,
+          1167.54,
+          1092.46,
+          1130.03,
+          1151.61,
+          1104.4
+        ],
+        "median_ms": 1098.7,
+        "p95_ms": 1159.93
+      },
+      "ch": {
+        "samples_ms": [
+          24.22,
+          27.81,
+          24.48,
+          24.39,
+          25.06,
+          22.93,
+          22.11,
+          25.76,
+          21.34,
+          24.33,
+          22.53,
+          23.21,
+          21.32,
+          22.34,
+          21.39,
+          22.78,
+          20.99,
+          22.68,
+          21.35,
+          21.71
+        ],
+        "median_ms": 22.73,
+        "p95_ms": 25.76
+      },
+      "median_speedup_pg_over_ch": 48.34,
+      "baseline_sql": "SELECT (t.created_at AT TIME ZONE 'Asia/Tehran')::date AS day, t.channel,\n       count(*) FILTER (WHERE t.status = 'SUCCESS')::numeric\n         / NULLIF(count(*) FILTER (WHERE t.status IN ('SUCCESS','FAILED','REVERSED')), 0) AS success_rate\nFROM core.transactions t\nWHERE t.created_at >= ((DATE '2026-11-13') - 29)::timestamp AT TIME ZONE 'Asia/Tehran'\n  AND t.created_at <  ((DATE '2026-11-13') + 1)::timestamp  AT TIME ZONE 'Asia/Tehran'\nGROUP BY 1, 2 ORDER BY 1, 2;",
+      "optimized_sql": "SELECT date AS day,\n       channel,\n       toFloat64(sum(success_count)) / nullIf(toFloat64(sum(terminal_count)), 0) AS success_rate\nFROM marts.agg_daily_channel\nWHERE date >= addDays(toDate('2026-11-13'), -29)\n  AND date <= toDate('2026-11-13')\nGROUP BY day, channel\nORDER BY day, channel;"
+    },
+    {
+      "card": "card3_top10_merchants_current_month",
+      "pg": {
+        "samples_ms": [
+          424.42,
+          425.09,
+          424.35,
+          425.55,
+          436.2,
+          430.53,
+          437.99,
+          438.12,
+          424.28,
+          434.11,
+          423.02,
+          423.8,
+          421.72,
+          423.91,
+          425.53,
+          426.0,
+          419.2,
+          428.13,
+          426.44,
+          422.01
+        ],
+        "median_ms": 425.31,
+        "p95_ms": 437.99
+      },
+      "ch": {
+        "samples_ms": [
+          30.18,
+          30.01,
+          31.61,
+          28.46,
+          30.22,
+          28.33,
+          29.06,
+          30.05,
+          28.93,
+          29.1,
+          28.87,
+          28.66,
+          31.14,
+          26.37,
+          28.98,
+          28.16,
+          29.15,
+          28.59,
+          29.81,
+          25.57
+        ],
+        "median_ms": 29.02,
+        "p95_ms": 31.14
+      },
+      "median_speedup_pg_over_ch": 14.66,
+      "baseline_sql": "SELECT m.merchant_id, m.name, sum(t.amount) AS success_amount\nFROM core.transactions t JOIN core.merchants m USING (merchant_id)\nWHERE t.status = 'SUCCESS'\n  AND t.created_at >= date_trunc('month', (DATE '2026-11-13')::timestamp) AT TIME ZONE 'Asia/Tehran'\n  AND t.created_at <  ((DATE '2026-11-13') + 1)::timestamp AT TIME ZONE 'Asia/Tehran'\nGROUP BY m.merchant_id, m.name\nORDER BY success_amount DESC, m.merchant_id ASC\nLIMIT 10;",
+      "optimized_sql": "SELECT a.merchant_id,\n       m.name,\n       a.success_amount\nFROM\n(\n    SELECT merchant_id, sum(success_amount) AS success_amount\n    FROM marts.agg_daily_merchant\n    WHERE date >= toStartOfMonth(toDate('2026-11-13'))\n      AND date <= toDate('2026-11-13')\n    GROUP BY merchant_id\n    ORDER BY success_amount DESC, merchant_id ASC\n    LIMIT 10\n) AS a\nINNER JOIN\n(\n    SELECT merchant_id, name\n    FROM marts.dim_merchant_history\n    WHERE is_current = 1\n) AS m ON a.merchant_id = m.merchant_id\nORDER BY a.success_amount DESC, a.merchant_id ASC;"
+    },
+    {
+      "card": "card4_fee_by_mcc_province_90d",
+      "pg": {
+        "samples_ms": [
+          948.28,
+          957.51,
+          961.44,
+          956.28,
+          949.93,
+          957.99,
+          960.59,
+          960.06,
+          969.28,
+          959.65,
+          1007.45,
+          964.2,
+          1023.62,
+          974.14,
+          978.9,
+          964.08,
+          985.62,
+          967.57,
+          955.32,
+          962.92
+        ],
+        "median_ms": 962.18,
+        "p95_ms": 1007.45
+      },
+      "ch": {
+        "samples_ms": [
+          24.5,
+          27.81,
+          24.36,
+          26.76,
+          23.7,
+          25.66,
+          23.35,
+          26.35,
+          24.07,
+          24.95,
+          24.19,
+          25.64,
+          23.57,
+          23.88,
+          26.13,
+          24.04,
+          23.98,
+          25.44,
+          22.07,
+          24.87
+        ],
+        "median_ms": 24.43,
+        "p95_ms": 26.76
+      },
+      "median_speedup_pg_over_ch": 39.39,
+      "baseline_sql": "SELECT m.mcc, m.province, sum(t.fee_amount) AS fee_amount\nFROM core.transactions t JOIN core.merchants m USING (merchant_id)\nWHERE t.status = 'SUCCESS'\n  AND t.created_at >= ((DATE '2026-11-13') - 89)::timestamp AT TIME ZONE 'Asia/Tehran'\n  AND t.created_at <  ((DATE '2026-11-13') + 1)::timestamp  AT TIME ZONE 'Asia/Tehran'\nGROUP BY 1, 2 ORDER BY 1, 2;",
+      "optimized_sql": "SELECT mcc,\n       province,\n       sum(fee_amount) AS fee_amount\nFROM marts.agg_daily_fee_mcc_province\nWHERE date >= addDays(toDate('2026-11-13'), -89)\n  AND date <= toDate('2026-11-13')\nGROUP BY mcc, province\nORDER BY mcc, province;"
+    },
+    {
+      "card": "card5_monthly_success_by_risk_level",
+      "pg": {
+        "samples_ms": [
+          3360.09,
+          3207.87,
+          3281.7,
+          3202.83,
+          3187.45,
+          3278.29,
+          3252.47,
+          3208.68,
+          3329.67,
+          3264.66,
+          3244.73,
+          3236.4,
+          3203.02,
+          3337.58,
+          3244.06,
+          3262.36,
+          3312.87,
+          3262.83,
+          3269.4,
+          3314.51
+        ],
+        "median_ms": 3262.6,
+        "p95_ms": 3337.58
+      },
+      "ch": {
+        "samples_ms": [
+          23.94,
+          22.34,
+          21.43,
+          20.44,
+          21.27,
+          20.41,
+          20.95,
+          19.25,
+          21.46,
+          19.92,
+          20.57,
+          19.86,
+          20.84,
+          20.07,
+          25.01,
+          19.21,
+          20.22,
+          18.0,
+          20.16,
+          19.4
+        ],
+        "median_ms": 20.43,
+        "p95_ms": 23.94
+      },
+      "median_speedup_pg_over_ch": 159.74,
+      "baseline_sql": "SELECT date_trunc('month', t.created_at AT TIME ZONE 'Asia/Tehran')::date AS month, m.risk_level,\n       count(*) AS success_count, sum(t.amount) AS success_amount\nFROM core.transactions t JOIN core.merchants m USING (merchant_id)\nWHERE t.status = 'SUCCESS'\nGROUP BY 1, 2 ORDER BY 1, 2;",
+      "optimized_sql": "SELECT toStartOfMonth(date) AS month,\n       risk_level,\n       sum(success_count) AS success_count,\n       sum(success_amount) AS success_amount\nFROM marts.agg_daily_risk\nGROUP BY month, risk_level\nORDER BY month, risk_level;"
+    }
+  ]
+}

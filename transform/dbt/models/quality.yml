@@ -1,0 +1,104 @@
+version: 2
+
+# M5 quality gates run against the logical, FINAL-backed reporting view,
+# not the physical ReplacingMergeTree table (which legitimately holds versions).
+# Tests are read-only; no materializations or external packages are required.
+models:
+  - name: fct_transactions_reporting
+    description: >
+      Logical current transaction facts with point-in-time merchant attributes.
+      Source-level hard-deleted IDs are retained as tombstones (is_deleted=1);
+      dashboards filter out tombstones. Historical data before CDC snapshot
+      uses a documented baseline merchant version, not recovered actual history.
+    meta:
+      owner: Zibal take-home data engineering (implementation owner)
+      sensitivity: internal_financial
+      pii_policy: no_plaintext_personal_identifiers
+    columns:
+      - name: transaction_id
+        description: Stable source transaction key, one logical row even after CDC updates.
+        tests:
+          - unique:
+              config: {tags: [m5_quality]}
+          - not_null:
+              config: {tags: [m5_quality]}
+      - name: merchant_id
+        description: FK to current merchant entity; join temporal details via SCD2.
+        tests:
+          - not_null:
+              config: {tags: [m5_quality]}
+          - relationships:
+              to: ref('stg_merchants_current')
+              field: merchant_id
+              config: {tags: [m5_quality]}
+      - name: created_at
+        description: UTC transaction creation time; basis for point-in-time attribution.
+        tests:
+          - not_null:
+              config: {tags: [m5_quality]}
+      - name: status
+        description: Current CDC-resolved transaction status.
+        tests:
+          - accepted_values:
+              values: ['PENDING', 'SUCCESS', 'FAILED', 'REVERSED']
+              config: {tags: [m5_quality]}
+      - name: channel
+        description: Transaction initiation channel.
+        tests:
+          - accepted_values:
+              values: ['POS', 'IPG', 'QR']
+              config: {tags: [m5_quality]}
+      - name: risk_level_at_txn
+        description: Merchant risk inferred at transaction created_at (not current risk).
+        tests:
+          - accepted_values:
+              values: ['LOW', 'MEDIUM', 'HIGH']
+              config: {tags: [m5_quality]}
+      - name: is_deleted
+        description: CDC delete tombstone flag, not a physical deletion from the mart.
+        tests:
+          - accepted_values:
+              values: [0, 1]
+              quote: false
+              config: {tags: [m5_quality]}
+      - name: card_bin
+        description: Six-digit bank identification number; payment metadata, not a full PAN.
+        meta:
+          sensitivity: restricted_payment_metadata
+
+  - name: dim_merchant_history
+    description: >
+      Merchant SCD2 with half-open validity windows, based on the snapshot
+      assumption and subsequent CDC updates.
+    meta:
+      owner: Zibal take-home data engineering (implementation owner)
+      sensitivity: internal
+    columns:
+      - name: merchant_id
+        tests:
+          - not_null:
+              config: {tags: [m5_quality]}
+      - name: risk_level
+        tests:
+          - accepted_values:
+              values: ['LOW', 'MEDIUM', 'HIGH']
+              config: {tags: [m5_quality]}
+
+  - name: stg_merchants_current
+    description: >
+      Latest logical merchant record, including restricted but masked contact
+      fields. Query with FINAL to collapse ReplacingMergeTree updates.
+    meta:
+      owner: Zibal take-home data engineering (implementation owner)
+      sensitivity: restricted_masked_personal_data
+    columns:
+      - name: owner_national_id_masked
+        description: Masked Iranian national identifier, last four digits retained.
+        meta:
+          sensitivity: pii_masked
+          pii_category: national_identifier
+      - name: owner_mobile_masked
+        description: Masked mobile number, last four digits retained.
+        meta:
+          sensitivity: pii_masked
+          pii_category: phone_number

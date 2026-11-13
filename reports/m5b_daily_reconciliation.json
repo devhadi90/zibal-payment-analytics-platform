@@ -1,0 +1,35 @@
+{
+  "checked_at_utc": "2026-11-13T21:00:55.534671+00:00",
+  "date_basis": "Asia/Tehran",
+  "start": "2026-05-15",
+  "end": "2026-11-13",
+  "expected_days": 183,
+  "passed": true,
+  "source": {
+    "database": "Zibal source PostgreSQL",
+    "metabase_id": 2,
+    "days": 183,
+    "success_count": "4483082",
+    "success_amount_irr": "32397177961000",
+    "query_ms": 4050.12
+  },
+  "target": {
+    "database": "Zibal analytical ClickHouse",
+    "metabase_id": 3,
+    "days": 183,
+    "success_count": "4483082",
+    "success_amount_irr": "32397177961000.0",
+    "query_ms": 107.85
+  },
+  "delta_ch_minus_pg": {
+    "success_count": "0",
+    "success_amount_irr": "0.0"
+  },
+  "missing_source_days": [],
+  "missing_published_days": [],
+  "unexpected_source_days": [],
+  "unexpected_published_days": [],
+  "mismatch_count": 0,
+  "mismatches": [],
+  "limitation": "Read-only snapshot comparison; simulator/other writers must be stopped and CDC/fact/aggregate checkpoints caught up before running."
+}

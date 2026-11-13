@@ -1,0 +1,116 @@
+# M1/T0 only. Kafka, Debezium, Python CDC consumer and dbt arrive in M2/M3.
+# All published ports are localhost-only: this is a disposable interview demo.
+services:
+  postgres:
+    image: postgres:${POSTGRES_VERSION}
+    command: >-
+      postgres -c wal_level=logical -c max_wal_senders=10 -c max_replication_slots=10
+      -c max_slot_wal_keep_size=4GB -c shared_buffers=512MB -c max_wal_size=4GB
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./source/postgres/00-databases.sql:/docker-entrypoint-initdb.d/00-databases.sql:ro
+      - ./source/postgres/01-init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    ports: ["127.0.0.1:5433:5432"]
+    mem_limit: 2g
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\" >/dev/null && psql -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\" -tAc \"SELECT to_regclass('core.transactions') IS NOT NULL\" | grep -qx t"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  seed:
+    image: postgres:${POSTGRES_VERSION}
+    depends_on:
+      postgres: {condition: service_healthy}
+    environment:
+      PGHOST: postgres
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB}
+    volumes:
+      - ./source/postgres/seed.sql:/seed.sql:ro
+    entrypoint: ["psql", "-v", "ON_ERROR_STOP=1", "-v", "rows=${SEED_ROWS}", "-v", "merchants=${SEED_MERCHANTS}", "-f", "/seed.sql"]
+    restart: "no"
+    mem_limit: 256m
+
+  simulator:
+    build: ./source/simulator
+    depends_on:
+      seed: {condition: service_completed_successfully}
+    environment: &source_connection
+      PGHOST: postgres
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB}
+      SEED_ROWS: ${SEED_ROWS}
+      SEED_MERCHANTS: ${SEED_MERCHANTS}
+      SIM_TPS: ${SIM_TPS}
+    command: ["python", "simulate.py", "--tps", "${SIM_TPS}"]
+    mem_limit: 256m
+    restart: unless-stopped
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:${CLICKHOUSE_VERSION}
+    environment:
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: zibal_analytics
+      CLICKHOUSE_PASSWORD: zibal_clickhouse_demo_2026
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    ports: ["127.0.0.1:8123:8123", "127.0.0.1:9000:9000"]
+    volumes:
+      - chdata:/var/lib/clickhouse
+    ulimits:
+      nofile: {soft: 262144, hard: 262144}
+    mem_limit: 4g
+    healthcheck:
+      test: ["CMD-SHELL", "clickhouse-client --user \"$$CLICKHOUSE_USER\" --password \"$$CLICKHOUSE_PASSWORD\" --query 'SELECT 1' >/dev/null"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  metabase:
+    image: metabase/metabase:${METABASE_VERSION}
+    depends_on:
+      postgres: {condition: service_healthy}
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_HOST: postgres
+      MB_DB_PORT: "5432"
+      MB_DB_DBNAME: metabase_app
+      MB_DB_USER: ${POSTGRES_USER}
+      MB_DB_PASS: ${POSTGRES_PASSWORD}
+      JAVA_OPTS: "-Xms256m -Xmx1024m"
+      MB_SITE_URL: http://localhost:3000
+    ports: ["127.0.0.1:3000:3000"]
+    mem_limit: 2g
+    restart: unless-stopped
+
+  metabase-bootstrap:
+    image: python:3.12.10-slim
+    depends_on:
+      seed: {condition: service_completed_successfully}
+      clickhouse: {condition: service_healthy}
+      metabase: {condition: service_started}
+    environment:
+      MB_URL: http://metabase:3000
+      MB_ADMIN_EMAIL: ${METABASE_ADMIN_EMAIL}
+      MB_ADMIN_PASSWORD: ${METABASE_ADMIN_PASSWORD}
+      MB_SOURCE_PASSWORD: ${METABASE_SOURCE_PASSWORD}
+      MB_CH_REPORTING_PASSWORD: ${CLICKHOUSE_REPORTING_PASSWORD:-zibal_reporting_dev_2026}
+      POSTGRES_DB: ${POSTGRES_DB}
+      AS_OF_DATE: ${AS_OF_DATE:-}
+    volumes:
+      - ./metabase:/app:ro
+      - ./reports:/reports
+    working_dir: /app
+    command: ["python", "bootstrap.py"]
+    restart: "no"
+    mem_limit: 256m
+
+volumes:
+  pgdata:
+  chdata:
